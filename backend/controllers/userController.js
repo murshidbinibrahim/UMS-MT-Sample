@@ -4,14 +4,14 @@ const bcrypt = require("bcrypt");
 const hashPassword = async (password) => {
   const saltRounds = 10; //bcrypt applies a salt — a unique random string that makes the hash unpredictable
 
-  try {
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hash = await bcrypt.hash(password, salt);
-    //console.log(hash);
-    return hash;
-  } catch (error) {
-    console.log(error.message);
-  }
+  return bcrypt
+    .genSalt(saltRounds)
+    .then((salt) => {
+      return bcrypt.hash(password, salt);
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const user_create_get = (req, res) => {
@@ -20,18 +20,21 @@ const user_create_get = (req, res) => {
 
 const user_create_post = async (req, res) => {
   const { username, password, address } = req.body;
-  const hashedPassword = await hashPassword(password);
-  console.log("hashedPassword " + hashedPassword);
-  try {
-    const user = await User.create({
-      username: username,
-      password: hashedPassword,
-      address: address,
+  hashPassword(password)
+    .then((hashedPassword) => {
+      console.log(hashedPassword);
+      return User.create({
+        username: username,
+        password: hashedPassword,
+        address: address,
+      });
+    })
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      console.log(error.message);
     });
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
 const user_update = (req, res) => {
