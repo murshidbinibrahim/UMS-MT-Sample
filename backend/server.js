@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const app = express();
 require("dotenv").config();
 
@@ -22,6 +23,9 @@ mongoose
 //middleware
 //express.json() parses incoming JSON requests and puts the parsed data in req.body.
 app.use(express.json());
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
 
 //importing routers
 const userRouter = require("./routes/user-route");
