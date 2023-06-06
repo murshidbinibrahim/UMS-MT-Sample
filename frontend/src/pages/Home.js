@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import UsersCard from "../components/UsersCard";
+import UserCard from "../components/UserCard";
+import UserForm from "../components/UserForm";
 
 const Home = () => {
   const [users, setUsers] = useState([]);
@@ -21,10 +22,13 @@ const Home = () => {
 
   return (
     <div className="home">
-      {console.log(users)}
-      {users.map((user) => (
-        <UsersCard key={user._id} user={user} />
-      ))}
+      <div className="main-card">
+        {console.log(users)}
+        {users.map((user) => (
+          <UserCard key={user._id} user={user} />
+        ))}
+      </div>
+      <UserForm />
     </div>
   );
 };
